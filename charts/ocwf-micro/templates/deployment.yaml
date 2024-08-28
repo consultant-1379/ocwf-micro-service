@@ -1,0 +1,63 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      initContainers:
+      - name: init-waitforkafka
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        command: ["sh", "-c", "for i in $(seq 1 300); do nc eric-data-message-bus-kf 9092 && exit 0 || sleep 10; done; exit 1"]
+      containers: 
+      - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        name: {{ .Chart.Name }}
+        ports:
+        - name: http-api
+          containerPort: 8080
+        env:
+        - name: KAFKA_URL
+          value: {{ .Values.kafkaConfig.bootstrapServerIp }}
+        - name: KAFKA_PORT
+          value: "{{ .Values.kafkaConfig.bootstrapServerPort }}"
+        - name: KAFKA_TOPIC
+          value: {{ .Values.kafkaConfig.topicName }}
+        - name: KAFKA_TOPIC_GROUP_ID
+          value: {{ .Values.kafkaConfig.groupId }}
+        - name: ECM_URL
+          value: {{ .Values.ecmConfig.ecmUrl }}
+        - name: ECM_TENANT_ID
+          value: {{ .Values.ecmConfig.tenantId }}
+        - name: ECM_AUTH_HEADER
+          value: {{ .Values.ecmConfig.authHeader }}
+        - name: ECM_IMAGE_NAME
+          value: {{ .Values.ecmConfig.vmImageName }}
+        - name: BASE_BPMN_NAME
+          value: {{ .Values.bpmnConfig.baseBpmnFileName }}
+        - name: RESTART_BPMN_NAME
+          value: {{ .Values.bpmnConfig.restartBpmnFileName }}
+        - name: SCALE_BPMN_NAME
+          value: {{ .Values.bpmnConfig.scaleBpmnFileName }}
+        - name: HEAL_BPMN_NAME
+          value: {{ .Values.bpmnConfig.healBpmnFileName }}  
+        - name: SLEEP_INTERVAL
+          value: "{{ .Values.interval.sleepInterval }}"
+        - name: ENM_URL
+          value: {{ .Values.enmConfig.url }}
+        - name: ENM_USERNAME
+          value: {{ .Values.enmConfig.username }}
+        - name: ENM_PASSWORD
+          value: {{ .Values.enmConfig.password }}
+        - name: JAVA_OPTS
+          value: "-Xms{{ .Values.jvm.heap.min }} -Xmx{{ .Values.jvm.heap.max }}"
+       

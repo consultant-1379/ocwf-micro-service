@@ -1,0 +1,25 @@
+kafkaConfig:
+  bootstrapServerIp: "${KAFKA_URL:10.44.77.252}"
+  bootstrapServerPort: "${KAFKA_PORT:9092}"
+  topicName: "${KAFKA_TOPIC:Action}"
+  groupId: "${KAFKA_TOPIC_GROUP_ID:default-group-id1}"
+ 
+ecmConfig:
+  ecmUrl: "${ECM_URL:ieatdo9007-ecmha1-om.athtem.eei.ericsson.se}"
+  tenantId: "${ECM_TENANT_ID:ECM}"
+  authHeader: "${ECM_AUTH_HEADER:Basic ZWNtYWRtaW46Q2xvdWRBZG1pbjEyMw==}"
+  vmImageName: "${ECM_IMAGE_NAME:cirros-0.3.5}"
+ 
+bpmnConfig:
+ baseBpmnFileName: "${BASE_BPMN_NAME:start_stop_recreate_vm}"
+ restartBpmnFileName: "${RESTART_BPMN_NAME:restart_vm}"
+ scaleBpmnFileName: "${SCALE_BPMN_NAME:scale_vapp}"
+ healBpmnFileName: "${HEAL_BPMN_NAME:heal_vapp}"
+ 
+interval:
+ sleepInterval: "${SLEEP_INTERVAL:30000}"
+ 
+enmConfig:
+  url: "${ENM_URL:ieatenmc4b09-9.athtem.eei.ericsson.se}"
+  username: "${ENM_USERNAME:cenxuser}"
+  password: "${ENM_PASSWORD:Orion@12}"

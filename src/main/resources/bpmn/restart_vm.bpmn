@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.12.0">
+  <bpmn:process id="restart_vm" name="restart_vm" isExecutable="true">
+    <bpmn:startEvent id="StartEventProcessStarted" name="Process&#10;started">
+      <bpmn:outgoing>SequenceFlow_1dl5xmq</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_0z3l3s4">
+      <bpmn:incoming>SequenceFlow_0c29q02</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0z914qx</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:callActivity id="SubProcess_1mmdpba" name="stop process" calledElement="start_stop_recreate_vm">
+      <bpmn:extensionElements>
+        <camunda:in source="vm_id" target="vm_id" />
+        <camunda:in source="firstCommand" target="command" />
+        <camunda:in source="base_url" target="base_url" />
+        <camunda:in source="service" target="service" />
+        <camunda:in source="tenant_id" target="tenant_id" />
+        <camunda:in source="auth_header" target="auth_header" />
+        <camunda:out source="error" target="firstProcessError" />
+        <camunda:in source="sleepInterval" target="sleepInterval" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1dl5xmq</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0ybm63k</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="SequenceFlow_1dl5xmq" sourceRef="StartEventProcessStarted" targetRef="SubProcess_1mmdpba" />
+    <bpmn:callActivity id="SubProcess_1nno22x" name="start process" calledElement="start_stop_recreate_vm">
+      <bpmn:extensionElements>
+        <camunda:in source="vm_id" target="vm_id" />
+        <camunda:in source="secondCommand" target="command" />
+        <camunda:in source="base_url" target="base_url" />
+        <camunda:in source="service" target="service" />
+        <camunda:in source="tenant_id" target="tenant_id" />
+        <camunda:in source="auth_header" target="auth_header" />
+        <camunda:out source="error" target="secondProcessError" />
+        <camunda:in source="sleepInterval" target="sleepInterval" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1quwxkd</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0c29q02</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="SequenceFlow_0ybm63k" sourceRef="SubProcess_1mmdpba" targetRef="ExclusiveGateway_0juys99" />
+    <bpmn:sequenceFlow id="SequenceFlow_0c29q02" sourceRef="SubProcess_1nno22x" targetRef="EndEvent_0z3l3s4" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0juys99" name="is stop process completed successfully?">
+      <bpmn:incoming>SequenceFlow_0ybm63k</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0z914qx</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1quwxkd</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0z914qx" name="failed" sourceRef="ExclusiveGateway_0juys99" targetRef="EndEvent_0z3l3s4">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{firstProcessError}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1quwxkd" name="success" sourceRef="ExclusiveGateway_0juys99" targetRef="SubProcess_1nno22x">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{not firstProcessError}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="restart_vm">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEventProcessStarted">
+        <dc:Bounds x="173" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="171" y="138" width="41" height="24" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0z3l3s4_di" bpmnElement="EndEvent_0z3l3s4">
+        <dc:Bounds x="822" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="795" y="148" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CallActivity_0s875sa_di" bpmnElement="SubProcess_1mmdpba">
+        <dc:Bounds x="315" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1dl5xmq_di" bpmnElement="SequenceFlow_1dl5xmq">
+        <di:waypoint x="209" y="120" />
+        <di:waypoint x="315" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="262" y="99" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="CallActivity_03muxo9_di" bpmnElement="SubProcess_1nno22x">
+        <dc:Bounds x="637" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ybm63k_di" bpmnElement="SequenceFlow_0ybm63k">
+        <di:waypoint x="415" y="120" />
+        <di:waypoint x="472" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="398.5" y="99" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0c29q02_di" bpmnElement="SequenceFlow_0c29q02">
+        <di:waypoint x="737" y="120" />
+        <di:waypoint x="822" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="734.5" y="99" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0juys99_di" bpmnElement="ExclusiveGateway_0juys99" isMarkerVisible="true">
+        <dc:Bounds x="472" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="459" y="149" width="76" height="36" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0z914qx_di" bpmnElement="SequenceFlow_0z914qx">
+        <di:waypoint x="497" y="95" />
+        <di:waypoint x="497" y="33" />
+        <di:waypoint x="840" y="33" />
+        <di:waypoint x="840" y="102" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="655" y="12" width="28" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1quwxkd_di" bpmnElement="SequenceFlow_1quwxkd">
+        <di:waypoint x="522" y="120" />
+        <di:waypoint x="637" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="559" y="99" width="41" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

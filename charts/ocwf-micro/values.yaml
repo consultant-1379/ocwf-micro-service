@@ -1,0 +1,34 @@
+image: 
+  repository: armdocker.epk.ericsson.se/proj-sd-assurance-service-helm
+  tag: 1.0.0
+###################################Application Config#######################################
+kafkaConfig:
+  bootstrapServerIp: eric-data-message-bus-kf
+  bootstrapServerPort: 9092
+  topicName: Action
+  groupId: camunda-group-id1
+ 
+ecmConfig:
+  ecmUrl: ieatecm11.athtem.eei.ericsson.se
+  tenantId: ECM
+  authHeader: "Basic ZWNtYWRtaW46Q2xvdWRBZG1pbjEyMw=="
+  vmImageName: test_image
+ 
+bpmnConfig:
+ baseBpmnFileName: start_stop_recreate_vm
+ restartBpmnFileName: restart_vm
+ scaleBpmnFileName: scale_vapp
+ healBpmnFileName: heal_vapp
+ 
+interval:
+ sleepInterval: 30000
+ 
+enmConfig:
+  url: ieatenmc4b09-9.athtem.eei.ericsson.se
+  username: cenxuser
+  password: Orion@12
+
+jvm:
+  heap:
+    min: "300m"
+    max: "2000m"
